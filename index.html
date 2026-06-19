@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RetourColisBox — Récupérez vos objets dans les aéroports d'Afrique de l'Ouest</title>
+<meta name="description" content="RetourColisBox : récupérez objets confisqués, transférez vos bagages avec YANGO, et faites un don solidaire à l'Orphelinat de Grand-Bassam. 6 aéroports couverts.">
+<link href="https://unpkg.com/tailwindcss@3/dist/tailwind.min.css" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --em:#0f5132;--em2:#157347;--gold:#ffc107;--gold2:#e0a800;
+  --night:#0b132b;--surf:#f9fafb;--surf2:#f1f5f4;
+  --txt:#1a1a2e;--muted:#6b7280;--border:#e5e7eb;
+  --yango:#e8001d;--heart:#e11d48;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--surf);color:var(--txt);min-height:100vh}
+.ds{font-family:'DM Serif Display',serif}
+.sm{font-family:'Space Mono',monospace}
+
+/* ── HEADER ── */
+#hdr{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--night);border-bottom:2px solid var(--gold);transition:box-shadow .3s}
+.ni{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;height:62px}
+.logo{display:flex;align-items:center;gap:9px;cursor:pointer;text-decoration:none}
+.lic{width:34px;height:34px;border-radius:7px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:900;color:var(--night);flex-shrink:0}
+.ltx{color:#fff;font-weight:700;font-size:1.05rem;letter-spacing:-.02em}
+.ltx span{color:var(--gold)}
+.navl{display:flex;gap:.1rem;align-items:center}
+.nb{padding:6px 11px;border-radius:6px;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-size:.78rem;font-weight:500;color:rgba(255,255,255,.7);background:transparent;transition:all .2s;white-space:nowrap}
+.nb:hover{color:#fff;background:rgba(255,255,255,.09)}
+.nb.on{color:var(--night);background:var(--gold);font-weight:600}
+.hbg{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:8px;border:none;background:transparent;flex-shrink:0}
+.hbg span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:.3s}
+@media(max-width:900px){
+  .hbg{display:flex}
+  .navl{display:none;position:absolute;top:62px;left:0;right:0;background:var(--night);flex-direction:column;padding:.75rem;border-bottom:2px solid var(--gold);z-index:300}
+  .navl.open{display:flex}
+  .nb{width:100%;text-align:left;padding:10px 13px;font-size:.88rem}
+}
+
+/* ── PAGES ── */
+.pg{display:none;padding-top:62px;min-height:100vh}
+.pg.on{display:block}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,var(--night) 0%,#162240 55%,#0d3322 100%);padding:5rem 1.5rem 4rem;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1529074963764-98f45c47344b?w=1600&q=80') center/cover;opacity:.07}
+.hc{position:relative;max-width:820px;margin:0 auto}
+.eybrow{display:inline-flex;align-items:center;gap:7px;background:rgba(255,193,7,.12);border:1px solid rgba(255,193,7,.35);color:var(--gold);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 13px;border-radius:100px;margin-bottom:1.4rem}
+.htit{font-family:'DM Serif Display',serif;font-size:clamp(2rem,5.5vw,3.6rem);color:#fff;line-height:1.12;margin-bottom:1.1rem}
+.htit em{color:var(--gold);font-style:normal}
+.hsub{color:rgba(255,255,255,.66);font-size:1rem;line-height:1.72;margin-bottom:2.25rem;max-width:600px;margin-left:auto;margin-right:auto}
+.ybanner{display:inline-flex;align-items:center;gap:7px;background:rgba(232,0,29,.12);border:1px solid rgba(232,0,29,.28);border-radius:100px;padding:4px 12px;margin-bottom:1.75rem}
+.ydot{width:6px;height:6px;background:var(--yango);border-radius:50%}
+.ytx{font-size:.73rem;color:rgba(255,255,255,.8);font-weight:500}
+.ytx strong{color:#ff6b7a}
+.hbanner-heart{display:inline-flex;align-items:center;gap:7px;background:rgba(225,29,72,.1);border:1px solid rgba(225,29,72,.28);border-radius:100px;padding:4px 12px;margin-bottom:1.75rem;margin-left:.5rem}
+.hdot{width:6px;height:6px;background:var(--heart);border-radius:50%;animation:pulse 1.5s infinite}
+.htxthr{font-size:.73rem;color:rgba(255,255,255,.8);font-weight:500}
+.htxthr strong{color:#fb7185}
+
+/* search */
+.sw{background:rgba(255,255,255,.06);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.13);border-radius:16px;padding:1.35rem;max-width:500px;margin:0 auto 1.6rem}
+.sl{color:rgba(255,255,255,.55);font-size:.76rem;margin-bottom:6px;text-align:left}
+.sr{display:flex;gap:7px}
+.si{flex:1;padding:11px 14px;border-radius:8px;border:1.5px solid rgba(255,255,255,.17);background:rgba(255,255,255,.07);color:#fff;font-family:'Space Mono',monospace;font-size:.88rem;outline:none;transition:border-color .2s}
+.si::placeholder{color:rgba(255,255,255,.3)}
+.si:focus{border-color:var(--gold)}
+.sbtn{padding:11px 16px;background:var(--gold);color:var(--night);border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:.85rem;transition:background .2s;white-space:nowrap}
+.sbtn:hover{background:var(--gold2)}
+#sres{margin-top:.85rem;display:none}
+.rbdg{display:inline-flex;align-items:center;gap:7px;background:rgba(15,81,50,.55);border:1.5px solid #22c55e;color:#4ade80;padding:9px 14px;border-radius:9px;font-size:.83rem;font-weight:500}
+.rdot{width:7px;height:7px;background:#22c55e;border-radius:50%;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.35)}}
+.haps{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:1.6rem}
+.achip{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.7);font-size:.73rem;padding:4px 10px;border-radius:100px}
+.gd{width:5px;height:5px;background:#22c55e;border-radius:50%}
+
+/* ── SHARED SECTION ── */
+.sec{max-width:1280px;margin:0 auto;padding:4rem 1.5rem}
+.seye{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--em);margin-bottom:.65rem}
+.stit{font-family:'DM Serif Display',serif;font-size:clamp(1.7rem,3.8vw,2.5rem);color:var(--night);margin-bottom:.85rem}
+.ssub{color:var(--muted);font-size:.95rem;max-width:540px;line-height:1.72}
+
+/* ── SERVICE CARDS ── */
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:1.35rem;margin-top:2.5rem}
+.scard{border-radius:18px;overflow:hidden;border:1.5px solid var(--border);background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.055);transition:transform .25s,box-shadow .25s}
+.scard:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(0,0,0,.1)}
+.scard.heart-card{border-color:rgba(225,29,72,.25);background:linear-gradient(160deg,#fff5f7,#fff)}
+.cimg{width:100%;height:185px;object-fit:cover;display:block}
+.cbod{padding:1.5rem}
+.ctag{display:inline-flex;align-items:center;gap:5px;font-size:.67rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:3px 9px;border-radius:100px;margin-bottom:.85rem}
+.t-box{background:#dcfce7;color:#15803d}
+.t-bag{background:#fff7e6;color:#92400e}
+.t-heart{background:#ffe4e6;color:#be123c}
+.ctit{font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--night);margin-bottom:.5rem}
+.cdsc{color:var(--muted);font-size:.84rem;line-height:1.7;margin-bottom:1rem}
+.ybadge{display:flex;align-items:center;gap:7px;background:#fff5f5;border:1.5px solid rgba(232,0,29,.18);border-radius:9px;padding:.6rem .9rem;margin-bottom:1rem}
+.yic{width:26px;height:26px;border-radius:5px;background:var(--yango);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:.68rem;flex-shrink:0}
+.ytxb{font-size:.75rem;color:#7f1d1d;font-weight:500;line-height:1.4}
+.ytxb strong{color:var(--yango)}
+.hbadge{display:flex;align-items:center;gap:7px;background:#fff1f2;border:1.5px solid rgba(225,29,72,.18);border-radius:9px;padding:.6rem .9rem;margin-bottom:1rem}
+.hic{font-size:1.1rem;flex-shrink:0}
+.htxb{font-size:.75rem;color:#881337;font-weight:500;line-height:1.4}
+.htxb strong{color:var(--heart)}
+.cprice{display:flex;align-items:baseline;gap:7px;margin-bottom:1.1rem}
+.pm{font-family:'Space Mono',monospace;font-size:1.5rem;font-weight:700;color:var(--em)}
+.pm.heart{color:var(--heart)}
+.pa{font-size:.8rem;color:var(--muted)}
+.cfeat{list-style:none;margin-bottom:1.3rem}
+.cfeat li{display:flex;align-items:flex-start;gap:6px;font-size:.82rem;color:var(--muted);padding:3px 0}
+.cfeat li::before{content:'✓';color:var(--em);font-weight:700;flex-shrink:0;margin-top:1px}
+.cfeat li.heart-li::before{color:var(--heart)}
+.btn-em{display:block;width:100%;text-align:center;padding:11px 20px;border-radius:8px;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-size:.9rem;font-weight:600;background:var(--em);color:#fff;transition:background .2s}
+.btn-em:hover{background:var(--em2)}
+.btn-gd{display:block;width:100%;text-align:center;padding:11px 20px;border-radius:8px;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-size:.9rem;font-weight:600;background:var(--gold);color:var(--night);transition:background .2s}
+.btn-gd:hover{background:var(--gold2)}
+.btn-heart{display:block;width:100%;text-align:center;padding:11px 20px;border-radius:8px;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-size:.9rem;font-weight:600;background:var(--heart);color:#fff;transition:background .2s}
+.btn-heart:hover{background:#be123c}
+
+/* TRUST BAR */
+.tbar{background:var(--night);padding:1.6rem 1.5rem;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:1.6rem;border-top:1px solid rgba(255,255,255,.06)}
+.titem{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.65);font-size:.8rem}
+
+/* ── PAGE HERO ── */
+.phero{padding:4rem 1.5rem 3rem;text-align:center}
+.phero.dark{background:linear-gradient(135deg,var(--night) 0%,#1e3a5f 100%)}
+.phero.heart-bg{background:linear-gradient(135deg,#1a0a0e 0%,#3b0f1c 50%,#1a0a0e 100%)}
+.phero.lost-bg{background:linear-gradient(135deg,var(--night) 0%,#1a2744 60%,#0f2d1e 100%)}
+.phero.part-bg{background:linear-gradient(135deg,#0b132b 0%,#1a2a1a 100%)}
+.phtit{font-family:'DM Serif Display',serif;font-size:clamp(1.75rem,4vw,2.65rem);color:#fff;margin-bottom:.65rem}
+.phsub{color:rgba(255,255,255,.6);font-size:.95rem;max-width:580px;margin:0 auto}
+
+/* ── OBJECTS GRID ── */
+.ogrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.9rem;margin-top:2rem}
+.ocard{background:#fff;border-radius:14px;padding:1.3rem .85rem;text-align:center;border:1.5px solid var(--border);transition:border-color .2s,box-shadow .2s}
+.ocard:hover{border-color:var(--em);box-shadow:0 4px 14px rgba(15,81,50,.1)}
+.ocard.food{border-color:rgba(225,29,72,.2);background:#fff8f8}
+.oic{font-size:2rem;margin-bottom:.65rem}
+.onm{font-size:.77rem;font-weight:600;color:var(--night);margin-bottom:.3rem}
+.orl{font-size:.68rem;color:var(--muted);line-height:1.5}
+.obdg{font-size:.6rem;font-weight:700;padding:2px 7px;border-radius:100px;margin-top:6px;display:inline-block}
+.b-red{background:#fee2e2;color:#b91c1c}
+.b-org{background:#fff7ed;color:#c2410c}
+.b-pink{background:#ffe4e6;color:#be123c}
+
+/* FOOD SECTION */
+.food-banner{background:linear-gradient(135deg,#fff1f2,#fef9ee);border:2px solid rgba(225,29,72,.2);border-radius:18px;padding:2rem;margin-top:2rem}
+.fb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.85rem;margin-top:1.25rem}
+.fc{background:#fff;border-radius:12px;padding:1.1rem .75rem;text-align:center;border:1.5px solid rgba(225,29,72,.15)}
+
+/* STEPS */
+.sbg{background:var(--surf2)}
+.stgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.25rem;margin-top:2rem}
+.stcard{background:#fff;border-radius:14px;padding:1.5rem;border:1.5px solid var(--border);position:relative}
+.stnum{font-family:'Space Mono',monospace;font-size:2.3rem;font-weight:700;color:rgba(15,81,50,.1);line-height:1;margin-bottom:.85rem}
+.sttit{font-weight:700;color:var(--night);margin-bottom:.4rem;font-size:.9rem}
+.stdsc{color:var(--muted);font-size:.8rem;line-height:1.65}
+.starr{position:absolute;right:-10px;top:50%;transform:translateY(-50%);width:20px;height:20px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:var(--night);font-weight:700;z-index:1}
+@media(max-width:600px){.starr{display:none}}
+
+/* ── DON SOLIDAIRE PAGE ── */
+.heart-hero-icon{font-size:4rem;margin-bottom:1rem;animation:heartbeat 1.4s ease-in-out infinite}
+@keyframes heartbeat{0%,100%{transform:scale(1)}14%{transform:scale(1.15)}28%{transform:scale(1)}}
+.impact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.25rem;margin-top:2rem}
+.impact-card{background:#fff;border-radius:16px;padding:1.75rem;text-align:center;border:1.5px solid var(--border)}
+.impact-num{font-family:'DM Serif Display',serif;font-size:2.4rem;color:var(--heart);line-height:1}
+.impact-lbl{font-size:.8rem;color:var(--muted);margin-top:.4rem;line-height:1.5}
+.orphelinat-card{background:linear-gradient(135deg,#fff1f2,#fff5f0);border:2px solid rgba(225,29,72,.2);border-radius:20px;padding:2rem;margin-top:2rem;display:flex;gap:1.5rem;align-items:flex-start;flex-wrap:wrap}
+.oc-icon{font-size:3.5rem;flex-shrink:0}
+.oc-body{}
+.oc-title{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--night);margin-bottom:.5rem}
+.oc-desc{color:var(--muted);font-size:.88rem;line-height:1.75}
+.how-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1.25rem;margin-top:2rem}
+.how-card{background:#fff;border-radius:14px;padding:1.5rem;border:1.5px solid rgba(225,29,72,.15);text-align:center}
+.how-icon{font-size:2rem;margin-bottom:.65rem}
+.how-title{font-weight:700;font-size:.9rem;color:var(--night);margin-bottom:.4rem}
+.how-desc{font-size:.8rem;color:var(--muted);line-height:1.6}
+.don-cta-block{background:var(--heart);border-radius:18px;padding:2rem;text-align:center;margin-top:2.5rem}
+.dct-title{font-family:'DM Serif Display',serif;font-size:1.7rem;color:#fff;margin-bottom:.6rem}
+.dct-sub{color:rgba(255,255,255,.78);font-size:.9rem;margin-bottom:1.5rem}
+.btn-white{display:inline-block;padding:12px 28px;border-radius:9px;border:none;cursor:pointer;background:#fff;color:var(--heart);font-weight:700;font-size:.95rem;font-family:'Inter',sans-serif;transition:all .2s}
+.btn-white:hover{background:#fff1f2;transform:translateY(-1px)}
+
+/* ── OBJETS TROUVÉS PAGE ── */
+.lost-form-wrap{background:#fff;border-radius:20px;border:1.5px solid var(--border);padding:2rem;margin-top:2rem;box-shadow:0 4px 20px rgba(0,0,0,.06)}
+.lf-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:580px){.lf-grid{grid-template-columns:1fr}}
+.lf-group{display:flex;flex-direction:column;gap:5px}
+.lf-group.full{grid-column:1/-1}
+.lf-label{font-size:.78rem;font-weight:600;color:var(--night)}
+.lf-input,.lf-sel,.lf-ta{padding:10px 13px;border-radius:8px;border:1.5px solid var(--border);font-family:'Inter',sans-serif;font-size:.88rem;color:var(--txt);outline:none;transition:border-color .2s;background:var(--surf)}
+.lf-input:focus,.lf-sel:focus,.lf-ta:focus{border-color:var(--em)}
+.lf-ta{resize:vertical;min-height:90px}
+.recent-declarations{margin-top:2.5rem}
+.decl-item{background:#fff;border-radius:12px;padding:1.1rem 1.25rem;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;flex-wrap:wrap;gap:.5rem}
+.decl-ref{font-family:'Space Mono',monospace;font-size:.82rem;color:var(--em);font-weight:700}
+.decl-type{font-size:.8rem;color:var(--muted)}
+.decl-status{font-size:.7rem;font-weight:700;padding:3px 9px;border-radius:100px}
+.s-pending{background:#fef9c3;color:#854d0e}
+.s-found{background:#dcfce7;color:#15803d}
+.s-closed{background:#f3f4f6;color:#6b7280}
+
+/* ── PARTENAIRES PAGE ── */
+.part-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1.25rem;margin-top:2.25rem}
+.pcard{background:#fff;border-radius:16px;padding:1.65rem;border:1.5px solid var(--border);text-align:center;transition:box-shadow .2s,border-color .2s}
+.pcard:hover{box-shadow:0 6px 22px rgba(0,0,0,.09);border-color:var(--em)}
+.pcard.y-card{border-color:rgba(232,0,29,.2);background:linear-gradient(135deg,#fff5f5,#fff)}
+.plogo{font-size:2.5rem;margin-bottom:.75rem}
+.plogo.ylogo{width:50px;height:50px;border-radius:9px;background:var(--yango);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:.9rem;letter-spacing:-.02em;margin-bottom:.75rem}
+.pnm{font-weight:700;font-size:.97rem;color:var(--night);margin-bottom:.35rem}
+.pnm.yred{color:var(--yango)}
+.prl{font-size:.75rem;color:var(--muted);line-height:1.55}
+.manifesto{background:var(--night);border-radius:20px;padding:2.25rem;margin-top:2.5rem;position:relative;overflow:hidden}
+.manifesto::after{content:'📦';position:absolute;right:1.5rem;top:50%;transform:translateY(-50%);font-size:7rem;opacity:.04}
+.man-eye{color:var(--gold);font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.85rem}
+.man-quote{font-family:'DM Serif Display',serif;font-size:clamp(1.15rem,2.8vw,1.75rem);color:#fff;line-height:1.42;max-width:640px}
+.man-auth{color:rgba(255,255,255,.42);font-size:.8rem;margin-top:1rem}
+.contact-chips{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.3rem}
+.cc-chip{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:.65rem 1rem;color:rgba(255,255,255,.62);font-size:.78rem}
+.cc-chip strong{color:#fff;display:block;margin-bottom:1px}
+
+/* ── PRICING PAGE CARDS ── */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.35rem;margin-top:2.25rem}
+.prcard{background:#fff;border-radius:20px;overflow:hidden;border:2px solid var(--border)}
+.prcard.feat{border-color:var(--em)}
+.prcard.heart-pr{border-color:rgba(225,29,72,.3)}
+.prhead{padding:1.5rem;border-bottom:1.5px solid var(--border)}
+.prhead.g{background:var(--em)}
+.prhead.y{background:var(--gold)}
+.prhead.h{background:var(--heart)}
+.prnm{font-family:'DM Serif Display',serif;font-size:1.4rem}
+.prnm.w{color:#fff}.prnm.d{color:var(--night)}
+.prtag{font-size:.77rem;margin-top:.2rem}
+.prtag.wm{color:rgba(255,255,255,.7)}.prtag.dm{color:rgba(11,19,43,.6)}
+.prbod{padding:1.5rem}
+.dprice{margin-bottom:1.35rem}
+.p-eur{font-family:'Space Mono',monospace;font-size:1rem;color:var(--muted);text-decoration:line-through}
+.p-cfa{font-family:'Space Mono',monospace;font-size:2.4rem;font-weight:700;color:var(--night);line-height:1.1}
+.p-cfa.hc{color:var(--heart)}
+.p-sub{font-size:.73rem;color:var(--muted);margin-top:2px}
+.princ{list-style:none;margin-bottom:1.5rem}
+.princ li{display:flex;gap:8px;font-size:.82rem;color:var(--muted);padding:4px 0;border-bottom:1px solid var(--surf2)}
+.princ li:last-child{border-bottom:none}
+.pii{flex-shrink:0;width:17px;text-align:center}
+
+/* AIRPORT GRID */
+.agrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:.9rem;margin-top:1.35rem}
+.arow{background:#fff;border-radius:12px;padding:1.1rem 1.3rem;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.ainf{display:flex;align-items:center;gap:10px}
+.afl{font-size:1.4rem}
+.anm{font-weight:600;font-size:.85rem;color:var(--night)}
+.acd{font-family:'Space Mono',monospace;font-size:.7rem;color:var(--muted)}
+.abdg{display:flex;align-items:center;gap:5px;background:#dcfce7;color:#15803d;font-size:.67rem;font-weight:600;padding:3px 8px;border-radius:100px}
+.adot{width:5px;height:5px;background:#22c55e;border-radius:50%;animation:pulse 1.5s infinite}
+
+/* CALLOUT */
+.cal{background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;padding:.85rem 1.1rem;display:flex;gap:8px;align-items:flex-start;margin-top:1.25rem}
+.cai{font-size:.97rem;flex-shrink:0;margin-top:1px}
+.catx{font-size:.8rem;color:#92400e;line-height:1.6}
+.cal.pink{background:#fff1f2;border-color:rgba(225,29,72,.25)}
+.cal.pink .catx{color:#881337}
+
+/* ── CONTACT FORM ── */
+.cfw{background:var(--night);border-radius:20px;padding:2.25rem;margin-top:2.5rem}
+.cftit{font-family:'DM Serif Display',serif;font-size:1.65rem;color:#fff;margin-bottom:.4rem}
+.cfsub{color:rgba(255,255,255,.55);font-size:.85rem;margin-bottom:1.75rem}
+.cfg{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
+@media(max-width:560px){.cfg{grid-template-columns:1fr}}
+.cg{display:flex;flex-direction:column;gap:5px}
+.cg.full{grid-column:1/-1}
+.cl{color:rgba(255,255,255,.7);font-size:.77rem;font-weight:500}
+.ci,.csel,.cta{padding:10px 13px;border-radius:8px;border:1.5px solid rgba(255,255,255,.13);background:rgba(255,255,255,.07);color:#fff;font-family:'Inter',sans-serif;font-size:.87rem;outline:none;transition:border-color .2s}
+.ci:focus,.csel:focus,.cta:focus{border-color:var(--gold)}
+.ci::placeholder,.cta::placeholder{color:rgba(255,255,255,.27)}
+.csel option{background:var(--night);color:#fff}
+.cta{resize:vertical;min-height:100px}
+.csub-btn{margin-top:1.1rem;padding:12px 28px;border-radius:8px;border:none;cursor:pointer;background:var(--gold);color:var(--night);font-weight:700;font-size:.9rem;font-family:'Inter',sans-serif;transition:background .2s}
+.csub-btn:hover{background:var(--gold2)}
+
+/* ── FOOTER ── */
+footer{background:var(--night);padding:2.5rem 1.5rem 1.5rem;border-top:2px solid var(--gold)}
+.fi{max-width:1280px;margin:0 auto}
+.fg{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:1.6rem;margin-bottom:2rem}
+@media(max-width:768px){.fg{grid-template-columns:1fr 1fr}}
+@media(max-width:440px){.fg{grid-template-columns:1fr}}
+.fdsc{color:rgba(255,255,255,.45);font-size:.78rem;line-height:1.7;margin-top:.65rem;max-width:260px}
+.fh{color:rgba(255,255,255,.38);font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.85rem}
+.fl{list-style:none;display:flex;flex-direction:column;gap:.4rem}
+.fl a{color:rgba(255,255,255,.6);font-size:.8rem;text-decoration:none;transition:color .2s;cursor:pointer}
+.fl a:hover{color:var(--gold)}
+.fb{border-top:1px solid rgba(255,255,255,.08);padding-top:1.25rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.65rem}
+.fcp{color:rgba(255,255,255,.35);font-size:.72rem}
+.flg{display:flex;gap:1.1rem}
+.flg a{color:rgba(255,255,255,.35);font-size:.72rem;text-decoration:none;cursor:pointer}
+.flg a:hover{color:rgba(255,255,255,.6)}
+
+/* ── MODAL ── */
+.mov{display:none;position:fixed;inset:0;z-index:500;background:rgba(11,19,43,.8);backdrop-filter:blur(7px);align-items:center;justify-content:center;padding:1.25rem}
+.mov.open{display:flex}
+.mbox{background:#fff;border-radius:22px;width:100%;max-width:490px;max-height:92vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.28);animation:up .3s ease}
+@keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.mhd{padding:1.35rem 1.55rem .85rem;border-bottom:1.5px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.mtit{font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--night)}
+.mcl{width:30px;height:30px;border-radius:7px;border:none;cursor:pointer;background:var(--surf2);color:var(--muted);font-size:1rem;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.mcl:hover{background:#e5e7eb}
+.mbod{padding:1.35rem 1.55rem}
+.msi{background:var(--surf2);border-radius:10px;padding:.85rem 1.1rem;margin-bottom:1.3rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
+.msnm{font-weight:600;font-size:.9rem;color:var(--night)}
+.mscfa{font-family:'Space Mono',monospace;font-weight:700;font-size:1.05rem}
+.mscfa.em{color:var(--em)}.mscfa.hr{color:var(--heart)}
+.mseur{font-size:.7rem;color:var(--muted);text-align:right;margin-top:1px}
+.ptabs{display:flex;gap:6px;margin-bottom:1.3rem;flex-wrap:wrap}
+.ptb{flex:1;min-width:80px;padding:8px 6px;border-radius:8px;border:2px solid var(--border);font-size:.76rem;font-weight:600;color:var(--muted);background:#fff;cursor:pointer;transition:all .2s;text-align:center}
+.ptb.on{border-color:var(--em);color:var(--em);background:#f0fdf4}
+.ppnl{display:none}
+.ppnl.on{display:block}
+.mmgr{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1.1rem}
+.mmop{padding:12px 8px;border-radius:10px;border:2px solid var(--border);cursor:pointer;text-align:center;transition:all .2s}
+.mmop:hover,.mmop.sel{border-color:var(--em);background:#f0fdf4}
+.mmlg{font-size:1.2rem;font-weight:800;margin-bottom:2px}
+.mmlg.wave{color:#0ea5e9}
+.mmlg.om{color:#f97316}
+.mmlg.mtn{color:#eab308;background:#1c1917;display:inline-block;padding:1px 5px;border-radius:3px}
+.mmlg.moov{color:#3b82f6}
+.mmnm{font-size:.67rem;font-weight:600;color:var(--muted)}
+.mmpr{display:flex;gap:6px;margin-bottom:.85rem}
+.mmfx{padding:9px 11px;border-radius:8px;border:1.5px solid var(--border);font-family:'Space Mono',monospace;font-size:.8rem;background:var(--surf2);color:var(--muted);white-space:nowrap}
+.ccgr{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
+.ccf{display:flex;flex-direction:column;gap:4px}
+.ccf.full{grid-column:1/-1}
+.ccl{font-size:.73rem;color:var(--muted);font-weight:500}
+.cci{padding:9px 12px;border-radius:8px;border:1.5px solid var(--border);font-size:.86rem;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;background:var(--surf2)}
+.cci:focus{border-color:var(--em)}
+.secn{display:flex;align-items:center;gap:7px;margin-top:.85rem;padding:9px 11px;background:#f0fdf4;border-radius:8px;border:1px solid #bbf7d0}
+.secn span{font-size:.73rem;color:#15803d}
+.mft{padding:.85rem 1.55rem 1.55rem}
+.paybtn{width:100%;padding:13px;border-radius:10px;border:none;cursor:pointer;background:var(--em);color:#fff;font-weight:700;font-size:.95rem;font-family:'Inter',sans-serif;transition:background .2s}
+.paybtn:hover{background:var(--em2)}
+.paybtn.hrt{background:var(--heart)}
+.paybtn.hrt:hover{background:#be123c}
+.succ{display:none;text-align:center;padding:1.65rem}
+.suic{font-size:3rem;margin-bottom:.85rem}
+.sutit{font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--night);margin-bottom:.4rem}
+.susub{color:var(--muted);font-size:.85rem;line-height:1.6}
+.suref{font-family:'Space Mono',monospace;background:#dcfce7;color:#15803d;padding:6px 13px;border-radius:7px;display:inline-block;margin-top:.85rem;font-size:.85rem;font-weight:700}
+.suref.hr{background:#ffe4e6;color:var(--heart)}
+
+/* TOAST */
+#tst{position:fixed;bottom:1.35rem;right:1.35rem;z-index:2000;background:var(--night);color:#fff;padding:11px 17px;border-radius:10px;font-size:.83rem;font-weight:500;border-left:4px solid var(--gold);box-shadow:0 8px 20px rgba(0,0,0,.22);transform:translateY(70px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);pointer-events:none;max-width:300px}
+#tst.show{transform:translateY(0);opacity:1}
+</style>
+</head>
+<body>
+
+<!-- ══════════ HEADER ══════════ -->
+<header id="hdr">
+  <div class="ni">
+    <div class="logo" onclick="pg('home')">
+      <div class="lic">📦</div>
+      <span class="ltx">Retour<span>Colis</span>Box</span>
+    </div>
+    <button class="hbg" onclick="tmenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="navl" id="navl">
+      <button class="nb on"  id="n-home" onclick="pg('home')">🏠 Accueil</button>
+      <button class="nb"     id="n-obj"  onclick="pg('obj')">🚫 Objets Interdits</button>
+      <button class="nb"     id="n-don"  onclick="pg('don')">❤️ Don Solidaire</button>
+      <button class="nb"     id="n-lost" onclick="pg('lost')">🔍 Objets Trouvés</button>
+      <button class="nb"     id="n-part" onclick="pg('part')">🤝 Partenaires</button>
+    </nav>
+  </div>
+</header>
+
+<!-- ══════════ PAGE ACCUEIL ══════════ -->
+<div class="pg on" id="pg-home">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hc">
+      <div class="eybrow">🌍 Lancé été 2026 — Afrique de l'Ouest</div>
+      <h1 class="htit">Votre objet confisqué<br>à l'aéroport ?<br><em>On s'en occupe.</em></h1>
+      <p class="hsub">RetourColisBox sécurise vos effets personnels refusés en cabine, transfère vos bagages avec YANGO et offre vos denrées saisies à un orphelinat.</p>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem;margin-bottom:1.75rem">
+        <div class="ybanner"><div class="ydot"></div><span class="ytx">Transport officiel : <strong>YANGO</strong> — Collecte à domicile</span></div>
+        <div class="hbanner-heart"><div class="hdot"></div><span class="htxthr"><strong>❤️ Don du Cœur</strong> — Orphelinat de Grand-Bassam</span></div>
+      </div>
+      <div class="sw">
+        <div class="sl">🔍 Suivre mon colis — saisissez votre référence</div>
+        <div class="sr">
+          <input class="si" id="tri" type="text" placeholder="Ex : RCB-2026-X" maxlength="13">
+          <button class="sbtn" onclick="trk()">Rechercher</button>
+        </div>
+        <div id="sres"><div class="rbdg"><span class="rdot"></span><span id="rtx"></span></div></div>
+      </div>
+      <div class="haps">
+        <div class="achip"><span class="gd"></span>ABJ Abidjan</div>
+        <div class="achip"><span class="gd"></span>BKO Bamako</div>
+        <div class="achip"><span class="gd"></span>OUA Ouagadougou</div>
+        <div class="achip"><span class="gd"></span>NIM Niamey</div>
+        <div class="achip"><span class="gd"></span>LFW Lomé</div>
+        <div class="achip"><span class="gd"></span>CKY Conakry</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="sec">
+    <p class="seye">Trois services complémentaires</p>
+    <h2 class="stit">Box, Bag ou Don — choisissez votre solution</h2>
+    <p class="ssub">Des offres pensées pour le voyageur en Afrique de l'Ouest : simples, rapides, à prix adapté en F CFA.</p>
+    <div class="sgrid">
+
+      <!-- BOX -->
+      <div class="scard">
+        <img class="cimg" src="https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=700&q=80" alt="Contrôle sûreté aéroport" loading="lazy">
+        <div class="cbod">
+          <div class="ctag t-box">📦 RetourColisBox</div>
+          <h3 class="ctit">Objets & Parfums interdits en cabine</h3>
+          <p class="cdsc">Vos effets confisqués au contrôle de sûreté sont mis sous scellé, étiquetés à votre nom et récupérables à votre retour ou expédiés vers vous.</p>
+          <div class="cprice"><span class="pm">5 900 F CFA</span><span class="pa">≈ 10 €</span></div>
+          <ul class="cfeat">
+            <li>Prise en charge immédiate en zone filtrage</li>
+            <li>Stockage sécurisé sous étiquette nominative</li>
+            <li>Suivi en ligne via référence unique RCB-XXXX</li>
+            <li>Retrait disponible jusqu'à 90 jours</li>
+          </ul>
+          <button class="btn-em" onclick="openM('RetourColisBox — Stockage sécurisé','5 900 F CFA','≈ 10 €','em')">Choisir cette option</button>
+        </div>
+      </div>
+
+      <!-- BAG -->
+      <div class="scard">
+        <img class="cimg" src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=700&q=80" alt="Transfert bagages avec YANGO" loading="lazy">
+        <div class="cbod">
+          <div class="ctag t-bag">🧳 RetourColisBag</div>
+          <h3 class="ctit">Bagages ville ↔ aéroport</h3>
+          <p class="cdsc">Voyagez les mains libres. Votre bagage est collecté chez vous ou à l'hôtel par un chauffeur YANGO certifié et livré en zone d'enregistrement.</p>
+          <div class="ybadge">
+            <div class="yic">YGO</div>
+            <div class="ytxb"><strong>YANGO</strong> — Partenaire Transport Officiel<br>Collecte sécurisée à domicile ou à l'hôtel</div>
+          </div>
+          <div class="cprice"><span class="pm">35 000 F CFA</span><span class="pa">≈ 54 €</span></div>
+          <ul class="cfeat">
+            <li>Enlèvement par chauffeur YANGO certifié</li>
+            <li>Livraison directe en zone enregistrement</li>
+            <li>Tracking GPS temps réel via l'app YANGO</li>
+            <li>Assurance bagages incluse</li>
+          </ul>
+          <button class="btn-gd" onclick="openM('RetourColisBag — Expédition internationale','35 000 F CFA','≈ 54 €','em')">Choisir cette option</button>
+        </div>
+      </div>
+
+      <!-- DON DU CŒUR -->
+      <div class="scard heart-card">
+        <img class="cimg" src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=700&q=80" alt="Don solidaire enfants orphelinat" loading="lazy">
+        <div class="cbod">
+          <div class="ctag t-heart">❤️ Don du Cœur</div>
+          <h3 class="ctit">Nourriture confisquée → Orphelinat</h3>
+          <p class="cdsc">Vos denrées alimentaires saisies ne sont pas perdues. Pour un forfait social, elles sont acheminées et offertes à l'Orphelinat National de Grand-Bassam.</p>
+          <div class="hbadge">
+            <div class="hic">🏠</div>
+            <div class="htxb"><strong>Orphelinat National de Grand-Bassam</strong><br>Côte d'Ivoire — bénéficiaire officiel du programme</div>
+          </div>
+          <div class="cprice"><span class="pm heart">1 500 F CFA</span><span class="pa">≈ 2,50 €</span></div>
+          <ul class="cfeat">
+            <li class="heart-li">Denrées périssables et non périssables acceptées</li>
+            <li class="heart-li">Acheminement sécurisé sous chaîne du froid si nécessaire</li>
+            <li class="heart-li">Attestation de don numérique envoyée par SMS</li>
+            <li class="heart-li">Programme encadré par Ivoire Consulting</li>
+          </ul>
+          <button class="btn-heart" onclick="openM('Don du Cœur — Transfert vers orphelinat','1 500 F CFA','≈ 2,50 €','hr')">Faire un Don du Cœur</button>
+        </div>
+      </div>
+
+    </div>
+    <div class="cal">
+      <span class="cai">💡</span>
+      <span class="catx"><strong>Comment ça marche ?</strong> L'agent de sûreté vous remet une étiquette avec votre référence unique. Connectez-vous sur RetourColisBox.com, choisissez votre option et payez par Mobile Money ou carte. Simple, rapide, solidaire.</span>
+    </div>
+  </section>
+
+  <!-- TRUST BAR -->
+  <div class="tbar">
+    <div class="titem">📮 <span>Partenaire <strong style="color:#fff">La Poste</strong></span></div>
+    <div class="titem">🏛️ <span>Partenaire <strong style="color:#fff">Groupe ADP</strong></span></div>
+    <div class="titem"><span style="background:var(--yango);border-radius:5px;padding:2px 5px;font-size:.75rem;font-weight:900;color:#fff">YGO</span> <span>Transport <strong style="color:#ff6b7a">YANGO</strong></span></div>
+    <div class="titem">❤️ <span>Don solidaire <strong style="color:#fb7185">Grand-Bassam</strong></span></div>
+    <div class="titem">🌍 <span><strong style="color:#fff">6 aéroports</strong> Afrique de l'Ouest</span></div>
+    <div class="titem">📱 <span><strong style="color:#fff">Wave · Orange · MTN · Moov</strong></span></div>
+  </div>
+
+  <!-- STEPS -->
+  <section class="sec sbg" style="padding:3.5rem 1.5rem">
+    <div style="max-width:1280px;margin:0 auto">
+      <p class="seye">En 3 étapes</p>
+      <h2 class="stit">Récupérez votre bien en toute sérénité</h2>
+      <div class="stgrid" style="max-width:720px">
+        <div class="stcard" style="position:relative"><div class="stnum">01</div><div class="sttit">Étiquette reçue</div><div class="stdsc">L'agent de sûreté vous remet votre référence personnelle sur étiquette dès la confiscation.</div><div class="starr">→</div></div>
+        <div class="stcard" style="position:relative"><div class="stnum">02</div><div class="sttit">Inscription en ligne</div><div class="stdsc">Saisissez votre référence, choisissez votre option : récupération, expédition ou don solidaire.</div><div class="starr">→</div></div>
+        <div class="stcard"><div class="stnum">03</div><div class="sttit">Payez & suivez</div><div class="stdsc">Mobile Money ou carte. Votre colis est suivi jusqu'à restitution ou livraison à l'orphelinat.</div></div>
+      </div>
+      <div style="text-align:center;margin-top:1.75rem">
+        <button class="btn-em" style="display:inline-block;width:auto;padding:11px 26px" onclick="pg('obj')">Voir la procédure complète →</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ══════════ PAGE OBJETS INTERDITS ══════════ -->
+<div class="pg" id="pg-obj">
+
+  <div class="phero dark">
+    <p style="color:var(--gold);font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.65rem">Réglementation aéroportuaire OACI</p>
+    <h1 class="phtit">Objets interdits en cabine</h1>
+    <p class="phsub">Ce que confisque le contrôle de sûreté — et comment RetourColisBox vous aide à retrouver vos effets.</p>
+  </div>
+
+  <section class="sec">
+    <p class="seye">Catégories standard</p>
+    <h2 class="stit">Objets fréquemment saisis</h2>
+    <p class="ssub">Ces objets sont systématiquement confisqués lors du passage au contrôle de sûreté avant l'embarquement.</p>
+    <div class="ogrid">
+      <div class="ocard"><div class="oic">💧</div><div class="onm">Liquides &gt; 100 ml</div><div class="orl">Tout flacon dépassant 100 ml par contenant</div><span class="obdg b-red">Interdit cabine</span></div>
+      <div class="ocard"><div class="oic">🌸</div><div class="onm">Parfums</div><div class="orl">Flacons &gt; 100 ml hors sachet réglementaire</div><span class="obdg b-red">Interdit cabine</span></div>
+      <div class="ocard"><div class="oic">💄</div><div class="onm">Cosmétiques</div><div class="orl">Crèmes, gels et lotions au-delà de 100 ml</div><span class="obdg b-org">Limité 100 ml</span></div>
+      <div class="ocard"><div class="oic">🔪</div><div class="onm">Couteaux de poche</div><div class="orl">Canif, couteau suisse, cutter, scie portative</div><span class="obdg b-red">Interdit cabine</span></div>
+      <div class="ocard"><div class="oic">🔧</div><div class="onm">Outils</div><div class="orl">Tournevis, clés, perceuses, marteaux &gt; 300g</div><span class="obdg b-red">Interdit cabine</span></div>
+      <div class="ocard"><div class="oic">⚡</div><div class="onm">Batteries &gt; 100 Wh</div><div class="orl">Powerbanks ou batteries non déclarées</div><span class="obdg b-org">Conditions strictes</span></div>
+      <div class="ocard"><div class="oic">🧴</div><div class="onm">Produits ménagers</div><div class="orl">Javel, détergents, aérosols non conformes</div><span class="obdg b-red">Interdit cabine</span></div>
+      <div class="ocard"><div class="oic">🔫</div><div class="onm">Répliques d'armes</div><div class="orl">Pistolets jouets, armes factices</div><span class="obdg b-red">Interdit cabine</span></div>
+      <div class="ocard"><div class="oic">🪓</div><div class="onm">Outils de jardinage</div><div class="orl">Machettes, serpes, coupes-branches</div><span class="obdg b-red">Interdit cabine</span></div>
+      <div class="ocard"><div class="oic">🍾</div><div class="onm">Boissons &gt; 100 ml</div><div class="orl">Eau, jus, sodas achetés avant la zone filtrage</div><span class="obdg b-red">Interdit cabine</span></div>
+      <div class="ocard"><div class="oic">💡</div><div class="onm">Briquets torches</div><div class="orl">Briquets à flamme puissante en quantité</div><span class="obdg b-org">Conditions strictes</span></div>
+      <div class="ocard"><div class="oic">🎿</div><div class="onm">Équipements sport</div><div class="orl">Battes, bâtons de golf, raquettes de squash</div><span class="obdg b-org">Soute uniquement</span></div>
+    </div>
+  </section>
+
+  <!-- PRODUITS ALIMENTAIRES -->
+  <section class="sec" style="padding-top:0">
+    <div class="food-banner">
+      <p style="color:var(--heart);font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem">⚠️ Section spéciale Afrique de l'Ouest</p>
+      <h2 style="font-family:'DM Serif Display',serif;font-size:clamp(1.4rem,3vw,2rem);color:var(--night);margin-bottom:.5rem">Produits alimentaires locaux — Fréquemment saisis</h2>
+      <p style="color:var(--muted);font-size:.88rem;line-height:1.7;max-width:640px;margin-bottom:1rem">En Afrique de l'Ouest, de nombreux voyageurs transportent en cabine des denrées culinaires locales qui finissent confisquées faute d'information. Ces produits peuvent participer au <strong style="color:var(--heart)">Programme Don du Cœur</strong> plutôt que d'être jetés.</p>
+      <div class="fb-grid">
+        <div class="fc"><div style="font-size:1.8rem;margin-bottom:.4rem">🫙</div><div style="font-size:.77rem;font-weight:600;color:var(--night)">Attiéké emballé</div><div style="font-size:.67rem;color:var(--muted)">Conditionnement hermétique requis</div><span class="obdg b-pink">Souvent saisi</span></div>
+        <div class="fc"><div style="font-size:1.8rem;margin-bottom:.4rem">🌶️</div><div style="font-size:.77rem;font-weight:600;color:var(--night)">Pâtes de piment</div><div style="font-size:.67rem;color:var(--muted)">Liquide &gt; 100 ml systématiquement</div><span class="obdg b-red">Interdit cabine</span></div>
+        <div class="fc"><div style="font-size:1.8rem;margin-bottom:.4rem">🫒</div><div style="font-size:.77nm;margin-bottom:.4rem">🫒</div><div style="font-size:.77rem;font-weight:600;color:var(--night)">Huiles artisanales</div><div style="font-size:.67rem;color:var(--muted)">Huile de palme, noix de coco, karité</div><span class="obdg b-red">Interdit cabine</span></div>
+        <div class="fc"><div style="font-size:1.8rem;margin-bottom:.4rem">🐟</div><div style="font-size:.77rem;font-weight:600;color:var(--night)">Poisson fumé / séché</div><div style="font-size:.67rem;color:var(--muted)">Odeur & conditionnement contrôlés</div><span class="obdg b-org">Souvent contesté</span></div>
+        <div class="fc"><div style="font-size:1.8rem;margin-bottom:.4rem">🫘</div><div style="font-size:.77rem;font-weight:600;color:var(--night)">Légumineuses en sauce</div><div style="font-size:.67rem;color:var(--muted)">Arachides, haricots en liquide</div><span class="obdg b-red">Interdit cabine</span></div>
+        <div class="fc"><div style="font-size:1.8rem;margin-bottom:.4rem">🥜</div><div style="font-size:.77rem;font-weight:600;color:var(--night)">Pâte d'arachide</div><div style="font-size:.67rem;color:var(--muted)">Considérée comme liquide/pâte &gt; 100g</div><span class="obdg b-org">Souvent saisi</span></div>
+        <div class="fc"><div style="font-size:1.8rem;margin-bottom:.4rem">🌿</div><div style="font-size:.77rem;font-weight:600;color:var(--night)">Feuilles fraîches</div><div style="font-size:.67rem;color:var(--muted)">Réglementation phytosanitaire stricte</div><span class="obdg b-red">Interdit cabine</span></div>
+        <div class="fc"><div style="font-size:1.8rem;margin-bottom:.4rem">🍫</div><div style="font-size:.77rem;font-weight:600;color:var(--night)">Pâtes de cacao</div><div style="font-size:.67rem;color:var(--muted)">Masse de cacao, beurre de cacao brut</div><span class="obdg b-org">Souvent contesté</span></div>
+      </div>
+      <div class="cal pink" style="margin-top:1.25rem">
+        <span class="cai">❤️</span>
+        <span class="catx"><strong>Ne jetez pas vos denrées !</strong> Pour seulement 1 500 F CFA, elles sont acheminées et offertes à l'Orphelinat National de Grand-Bassam grâce au <strong>Programme Don du Cœur</strong>. <a href="#" onclick="pg('don')" style="color:var(--heart);font-weight:700;text-decoration:underline">En savoir plus →</a></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCÉDURE -->
+  <div class="sbg">
+    <section class="sec">
+      <p class="seye">Guide complet</p>
+      <h2 class="stit">La procédure RetourColisBox — étape par étape</h2>
+      <div class="stgrid">
+        <div class="stcard" style="position:relative"><div class="stnum">01</div><div class="sttit">Objet confisqué</div><div class="stdsc">L'agent conditionne l'objet dans l'emballage RetourColisBox et l'enregistre dans le système.</div><div class="starr">→</div></div>
+        <div class="stcard" style="position:relative"><div class="stnum">02</div><div class="sttit">Étiquette remise</div><div class="stdsc">Vous recevez immédiatement l'étiquette avec votre numéro unique — votre clé de récupération.</div><div class="starr">→</div></div>
+        <div class="stcard" style="position:relative"><div class="stnum">03</div><div class="sttit">Connexion en ligne</div><div class="stdsc">Sur RetourColisBox.com, saisissez votre référence et renseignez vos coordonnées.</div><div class="starr">→</div></div>
+        <div class="stcard" style="position:relative"><div class="stnum">04</div><div class="sttit">Choisissez votre option</div><div class="stdsc">Stockage local (5 900 F CFA), expédition (35 000 F CFA) ou Don du Cœur (1 500 F CFA).</div><div class="starr">→</div></div>
+        <div class="stcard" style="position:relative"><div class="stnum">05</div><div class="sttit">Paiement Mobile Money</div><div class="stdsc">Wave, Orange Money, MTN, Moov ou carte bancaire. Le paiement valide votre dossier.</div><div class="starr">→</div></div>
+        <div class="stcard"><div class="stnum">06</div><div class="sttit">Récupération ou Don</div><div class="stdsc">Retirez votre bien à l'aéroport, recevez-le via YANGO ou recevez votre attestation de don numérique.</div></div>
+      </div>
+      <div style="text-align:center;margin-top:2rem">
+        <button class="btn-em" style="display:inline-block;width:auto;padding:11px 26px" onclick="openM('RetourColisBox — Stockage sécurisé','5 900 F CFA','≈ 10 €','em')">Démarrer ma récupération</button>
+      </div>
+    </section>
+  </div>
+
+</div>
+
+<!-- ══════════ PAGE DON SOLIDAIRE ══════════ -->
+<div class="pg" id="pg-don">
+
+  <div class="phero heart-bg" style="text-align:center">
+    <div class="heart-hero-icon">❤️</div>
+    <p style="color:#fb7185;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.65rem">Programme Social</p>
+    <h1 class="phtit">Le Don du Cœur</h1>
+    <p class="phsub">Transformer une confiscation en geste de solidarité — vos denrées saisies nourrissent des enfants à Grand-Bassam.</p>
+  </div>
+
+  <section class="sec">
+    <p class="seye">L'impact en chiffres</p>
+    <h2 class="stit">Chaque saisie peut devenir un repas</h2>
+    <div class="impact-grid">
+      <div class="impact-card">
+        <div class="impact-num">1 500</div>
+        <div style="font-family:'Space Mono',monospace;font-size:.75rem;color:var(--muted);margin-top:2px">F CFA</div>
+        <div class="impact-lbl">Forfait social — couvre l'acheminement sécurisé de vos denrées jusqu'à l'orphelinat</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-num">6</div>
+        <div class="impact-lbl">Aéroports partenaires du programme — les denrées collectées à ABJ, BKO, OUA, NIM, LFW, CKY sont regroupées</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-num">480+</div>
+        <div class="impact-lbl">Enfants accueillis à l'Orphelinat National de Grand-Bassam, bénéficiaires prioritaires du programme</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-num">100%</div>
+        <div class="impact-lbl">Des denrées collectées transmises aux structures sociales — aucune perte, aucune déperdition</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ORPHELINAT CARD -->
+  <section class="sec" style="padding-top:0">
+    <div class="orphelinat-card">
+      <div class="oc-icon">🏠</div>
+      <div class="oc-body">
+        <h3 class="oc-title">Orphelinat National de Grand-Bassam</h3>
+        <p class="oc-desc">Situé à Grand-Bassam, ville classée au Patrimoine Mondial de l'UNESCO, l'Orphelinat National de Côte d'Ivoire accueille des enfants en situation de vulnérabilité. Le programme Don du Cœur, piloté par Ivoire Consulting, organise l'acheminement sécurisé des denrées confisquées dans les aéroports vers cet établissement. Un partenariat ancré dans la réalité culturelle de l'Afrique de l'Ouest, où les voyageurs transportent naturellement de la nourriture pour leurs familles et proches.</p>
+        <div style="margin-top:1.1rem;display:flex;gap:.75rem;flex-wrap:wrap">
+          <span style="background:#ffe4e6;color:#be123c;font-size:.75rem;font-weight:600;padding:4px 10px;border-radius:100px">📍 Grand-Bassam, Côte d'Ivoire</span>
+          <span style="background:#ffe4e6;color:#be123c;font-size:.75rem;font-weight:600;padding:4px 10px;border-radius:100px">🏛️ Structure nationale reconnue</span>
+          <span style="background:#ffe4e6;color:#be123c;font-size:.75rem;font-weight:600;padding:4px 10px;border-radius:100px">🤝 Piloté par Ivoire Consulting</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMMENT ÇA MARCHE -->
+  <section class="sec" style="padding-top:0">
+    <p class="seye">Mécanisme du programme</p>
+    <h2 class="stit">Comment fonctionne le Don du Cœur ?</h2>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-icon">✈️</div>
+        <div class="how-title">1 — Saisie à l'aéroport</div>
+        <div class="how-desc">L'agent de sûreté identifie vos denrées alimentaires. Plutôt que de les confisquer définitivement, il vous propose l'option Don du Cœur.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-icon">💳</div>
+        <div class="how-title">2 — Forfait de 1 500 F CFA</div>
+        <div class="how-desc">Vous payez en ligne par Mobile Money ou carte. Ce montant couvre la logistique, le conditionnement et le transport sécurisé des denrées.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-icon">🚗</div>
+        <div class="how-title">3 — Collecte & acheminement</div>
+        <div class="how-desc">Les denrées sont regroupées par l'équipe RetourColisBox et acheminées périodiquement vers Grand-Bassam par nos partenaires logistiques.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-icon">📱</div>
+        <div class="how-title">4 — Attestation numérique</div>
+        <div class="how-desc">Vous recevez par SMS une attestation de don avec le numéro de lot et la date de livraison à l'orphelinat. Votre geste est traçable.</div>
+      </div>
+    </div>
+
+    <div class="cal pink" style="margin-top:1.5rem">
+      <span class="cai">❤️</span>
+      <span class="catx"><strong>Autres structures bénéficiaires :</strong> En cas de surplus ou selon la nature des denrées, le programme peut également orienter les dons vers d'autres structures sociales locales identifiées par Ivoire Consulting (centres d'accueil, foyers d'enfants, banques alimentaires associatives).</span>
+    </div>
+
+    <div class="don-cta-block">
+      <h3 class="dct-title">❤️ Transformer votre saisie en geste solidaire</h3>
+      <p class="dct-sub">Pour 1 500 F CFA seulement, vos denrées confisquées nourrissent des enfants plutôt que d'être jetées. C'est simple, traçable et profondément humain.</p>
+      <button class="btn-white" onclick="openM('Don du Cœur — Transfert vers orphelinat','1 500 F CFA','≈ 2,50 €','hr')">❤️ Je fais un Don du Cœur — 1 500 F CFA</button>
+    </div>
+  </section>
+
+</div>
+
+<!-- ══════════ PAGE OBJETS TROUVÉS ══════════ -->
+<div class="pg" id="pg-lost">
+
+  <div class="phero lost-bg">
+    <p style="color:var(--gold);font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.65rem">Module de déclaration</p>
+    <h1 class="phtit">🔍 Objets Trouvés</h1>
+    <p class="phsub">Déclarez la perte d'un objet personnel dans l'aéroport ou dans un véhicule YANGO partenaire. Nous déclenchons une recherche immédiate.</p>
+  </div>
+
+  <section class="sec">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-bottom:2rem">
+      <div style="background:#fff;border-radius:16px;padding:1.5rem;border:1.5px solid var(--border);text-align:center">
+        <div style="font-size:2.5rem;margin-bottom:.65rem">🛫</div>
+        <div style="font-weight:700;color:var(--night);margin-bottom:.4rem;font-size:.95rem">Perte en aéroport</div>
+        <div style="font-size:.8rem;color:var(--muted);line-height:1.6">Objet oublié dans la salle d'attente, au contrôle de sûreté, aux toilettes ou sur le tapis bagages</div>
+      </div>
+      <div style="background:#fff5f5;border-radius:16px;padding:1.5rem;border:1.5px solid rgba(232,0,29,.2);text-align:center">
+        <div style="font-size:2.5rem;margin-bottom:.65rem">🚖</div>
+        <div style="font-weight:700;color:var(--yango);margin-bottom:.4rem;font-size:.95rem">Perte dans un véhicule YANGO</div>
+        <div style="font-size:.8rem;color:var(--muted);line-height:1.6">Objet oublié dans un véhicule YANGO lors du transfert bagage ou d'un trajet depuis/vers l'aéroport</div>
+      </div>
+      <div style="background:#fff;border-radius:16px;padding:1.5rem;border:1.5px solid var(--border);text-align:center">
+        <div style="font-size:2.5rem;margin-bottom:.65rem">📦</div>
+        <div style="font-weight:700;color:var(--night);margin-bottom:.4rem;font-size:.95rem">Bagage non réceptionné</div>
+        <div style="font-size:.8rem;color:var(--muted);line-height:1.6">Valise ou colis non livré à l'adresse indiquée ou non disponible au point de retrait aéroport</div>
+      </div>
+    </div>
+
+    <div class="lost-form-wrap">
+      <h3 style="font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--night);margin-bottom:.4rem">Déclarer une perte</h3>
+      <p style="color:var(--muted);font-size:.85rem;margin-bottom:1.5rem">Remplissez ce formulaire. Notre équipe déclenche une recherche dans les 2 heures ouvrées.</p>
+      <div class="lf-grid">
+        <div class="lf-group"><label class="lf-label">Prénom & Nom *</label><input class="lf-input" type="text" placeholder="Ex : Aminata Koné" id="lf-nm"></div>
+        <div class="lf-group"><label class="lf-label">Numéro de téléphone *</label><input class="lf-input" type="tel" placeholder="+225 07 00 00 00 00" id="lf-ph"></div>
+        <div class="lf-group"><label class="lf-label">Type de perte *</label>
+          <select class="lf-sel" id="lf-ty">
+            <option value="">Sélectionner...</option>
+            <option>Perte en aéroport — zone publique</option>
+            <option>Perte en aéroport — zone filtrage / sûreté</option>
+            <option>Perte en aéroport — tapis bagages</option>
+            <option>Perte dans véhicule YANGO partenaire</option>
+            <option>Bagage non réceptionné — RetourColisBag</option>
+            <option>Colis non disponible — RetourColisBox</option>
+          </select>
+        </div>
+        <div class="lf-group"><label class="lf-label">Aéroport concerné *</label>
+          <select class="lf-sel" id="lf-ap">
+            <option value="">Sélectionner...</option>
+            <option>ABJ — Abidjan, Côte d'Ivoire</option>
+            <option>BKO — Bamako, Mali</option>
+            <option>OUA — Ouagadougou, Burkina Faso</option>
+            <option>NIM — Niamey, Niger</option>
+            <option>LFW — Lomé, Togo</option>
+            <option>CKY — Conakry, Guinée</option>
+          </select>
+        </div>
+        <div class="lf-group"><label class="lf-label">Date de la perte *</label><input class="lf-input" type="date" id="lf-dt"></div>
+        <div class="lf-group"><label class="lf-label">Référence RCB (si disponible)</label><input class="lf-input" type="text" placeholder="Ex : RCB-2026-X" id="lf-ref"></div>
+        <div class="lf-group full"><label class="lf-label">Description de l'objet perdu *</label><textarea class="lf-ta" placeholder="Décrivez l'objet précisément : nature, couleur, marque, contenu, valeur estimée..." id="lf-dsc"></textarea></div>
+        <div class="lf-group full"><label class="lf-label">Informations complémentaires</label><textarea class="lf-ta" style="min-height:70px" placeholder="Numéro de vol, heure approximative, zone précise, identifiant chauffeur YANGO..." id="lf-inf"></textarea></div>
+      </div>
+      <button class="btn-em" style="margin-top:1.1rem;display:inline-block;width:auto;padding:11px 26px" onclick="subLost()">🔍 Déclencher la recherche</button>
+    </div>
+
+    <!-- DÉCLARATIONS RÉCENTES (simulation) -->
+    <div class="recent-declarations">
+      <p class="seye" style="margin-top:2.5rem">Déclarations récentes — Statut en temps réel</p>
+      <h3 class="stit" style="font-size:1.4rem">Tableau de bord des recherches actives</h3>
+      <div class="decl-item"><div><div class="decl-ref">OBJ-2026-ABJ-0042</div><div class="decl-type">Téléphone Samsung — Zone filtrage ABJ</div></div><span class="decl-status s-found">✓ Retrouvé</span></div>
+      <div class="decl-item"><div><div class="decl-ref">OBJ-2026-BKO-0017</div><div class="decl-type">Sac à main — Véhicule YANGO BKO-447</div></div><span class="decl-status s-pending">⏳ En cours</span></div>
+      <div class="decl-item"><div><div class="decl-ref">OBJ-2026-ABJ-0039</div><div class="decl-type">Valise bleue — Tapis bagages ABJ Terminal 2</div></div><span class="decl-status s-found">✓ Retrouvée</span></div>
+      <div class="decl-item"><div><div class="decl-ref">OBJ-2026-LFW-0008</div><div class="decl-type">Ordinateur portable — Salle d'attente LFW</div></div><span class="decl-status s-pending">⏳ En cours</span></div>
+      <div class="decl-item"><div><div class="decl-ref">OBJ-2026-OUA-0023</div><div class="decl-type">Montre — Zone de sûreté OUA</div></div><span class="decl-status s-closed">✗ Clos — Non retrouvé</span></div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ══════════ PAGE PARTENAIRES ══════════ -->
+<div class="pg" id="pg-part">
+
+  <div class="phero part-bg">
+    <p style="color:var(--gold);font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.65rem">Écosystème institutionnel</p>
+    <h1 class="phtit">Nos Partenaires</h1>
+    <p class="phsub">Un réseau de confiance construit autour de l'aviation, de la logistique et de l'impact social en Afrique de l'Ouest.</p>
+  </div>
+
+  <section class="sec">
+    <p class="seye">Partenaires stratégiques</p>
+    <h2 class="stit">Ceux qui rendent RetourColisBox possible</h2>
+    <p class="ssub">Chaque partenaire apporte une expertise complémentaire pour garantir un service fiable, rapide et humain.</p>
+    <div class="part-grid">
+      <div class="pcard"><div class="plogo">📮</div><div class="pnm">La Poste</div><div class="prl">Partenaire logistique pour l'acheminement et la distribution des colis en Afrique francophone. Réseau de distribution capillaire unique.</div></div>
+      <div class="pcard"><div class="plogo">🏛️</div><div class="pnm">Groupe ADP</div><div class="prl">Partenaire opérationnel pour l'accès aux zones de sûreté aéroportuaire et la gestion des espaces de stockage dans les terminaux.</div></div>
+      <div class="pcard y-card"><div class="plogo ylogo">YGO</div><div class="pnm yred">YANGO</div><div class="prl">Partenaire Transport Officiel — Collecte sécurisée des bagages à domicile et à l'hôtel dans les 6 villes couvertes. Application de tracking intégrée.</div></div>
+      <div class="pcard"><div class="plogo">🌍</div><div class="pnm">Ivoire Consulting</div><div class="prl">Porteur du projet et pilote du Programme Don du Cœur. Plus de 24 ans d'expertise en coopération internationale et déploiement en Afrique de l'Ouest.</div></div>
+      <div class="pcard"><div class="plogo">🏢</div><div class="pnm">TITAN Holding</div><div class="prl">Co-développeur du service RetourColisBox. Opérations logistiques, partenariats institutionnels au Niger et coordination régionale Sahel.</div></div>
+      <div class="pcard" style="border-color:rgba(225,29,72,.2);background:linear-gradient(135deg,#fff5f7,#fff)"><div class="plogo">🏠</div><div class="pnm" style="color:var(--heart)">Orphelinat de Grand-Bassam</div><div class="prl">Bénéficiaire officiel du Programme Don du Cœur. Structure nationale reconnue accueillant plus de 480 enfants en Côte d'Ivoire.</div></div>
+    </div>
+
+    <!-- MANIFESTE -->
+    <div class="manifesto">
+      <div class="man-eye">Notre vision</div>
+      <p class="man-quote">"Faire de chaque aéroport d'Afrique de l'Ouest un point de service fluide, où aucun voyageur ne perd un bien personnel — et où chaque saisie alimentaire peut devenir un repas pour un enfant."</p>
+      <p class="man-auth">— Franck Vanié, Directeur de la publication — Ivoire Consulting / RetourColisBox</p>
+      <div class="contact-chips">
+        <div class="cc-chip"><strong>franckvanie@yahoo.de</strong>Direction & Partenariats</div>
+        <div class="cc-chip"><strong>+49 177 343 14 60</strong>WhatsApp Europe</div>
+        <div class="cc-chip"><strong>Freiburg i.Br. / Abidjan</strong>Siège Europe & Afrique</div>
+      </div>
+    </div>
+
+    <!-- FORM PARTENAIRES -->
+    <div class="cfw">
+      <h3 class="cftit">Devenir partenaire</h3>
+      <p class="cfsub">Compagnies aériennes, gestionnaires d'aéroports, chauffeurs YANGO, ONG, opérateurs logistiques — rejoignez l'écosystème.</p>
+      <div class="cfg">
+        <div class="cg"><label class="cl">Prénom & Nom *</label><input class="ci" type="text" placeholder="Ex : Marie Koffi" id="cf-nm"></div>
+        <div class="cg"><label class="cl">Organisation *</label><input class="ci" type="text" placeholder="Ex : Air Côte d'Ivoire" id="cf-or"></div>
+        <div class="cg"><label class="cl">Email professionnel *</label><input class="ci" type="email" placeholder="vous@organisation.com" id="cf-em"></div>
+        <div class="cg"><label class="cl">Téléphone (WhatsApp)</label><input class="ci" type="tel" placeholder="+225 07 XX XX XX XX" id="cf-ph"></div>
+        <div class="cg">
+          <label class="cl">Type de partenariat</label>
+          <select class="csel" id="cf-ty">
+            <option value="">Sélectionner...</option>
+            <option>Compagnie aérienne partenaire</option>
+            <option>Gestionnaire d'aéroport</option>
+            <option>Chauffeur / Partenaire YANGO</option>
+            <option>Opérateur postal / logistique</option>
+            <option>ONG / Structure sociale bénéficiaire</option>
+            <option>Mobile Money / Fintech</option>
+            <option>Agence de sûreté aéroportuaire</option>
+            <option>Autre</option>
+          </select>
+        </div>
+        <div class="cg">
+          <label class="cl">Aéroport(s) concerné(s)</label>
+          <select class="csel" id="cf-ap">
+            <option value="">Sélectionner...</option>
+            <option>ABJ — Abidjan</option>
+            <option>BKO — Bamako</option>
+            <option>OUA — Ouagadougou</option>
+            <option>NIM — Niamey</option>
+            <option>LFW — Lomé</option>
+            <option>CKY — Conakry</option>
+            <option>Tous les aéroports</option>
+          </select>
+        </div>
+        <div class="cg full"><label class="cl">Message *</label><textarea class="cta" placeholder="Décrivez votre organisation et votre projet de partenariat avec RetourColisBox..." id="cf-ms"></textarea></div>
+      </div>
+      <button class="csub-btn" onclick="subContact()">Envoyer ma demande →</button>
+    </div>
+  </section>
+
+</div>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer>
+  <div class="fi">
+    <div class="fg">
+      <div>
+        <div class="logo" style="cursor:default">
+          <div class="lic">📦</div>
+          <span class="ltx">Retour<span>Colis</span>Box</span>
+        </div>
+        <p class="fdsc">Service développé par Ivoire Consulting et TITAN Holding. Partenaire transport : YANGO. Programme Don du Cœur : Orphelinat de Grand-Bassam.</p>
+        <div style="margin-top:.85rem;display:flex;gap:5px;flex-wrap:wrap">
+          <span style="background:rgba(255,255,255,.07);border-radius:6px;padding:4px 9px;color:rgba(255,255,255,.42);font-size:.7rem">🔒 Paiement sécurisé</span>
+          <span style="background:rgba(255,255,255,.07);border-radius:6px;padding:4px 9px;color:rgba(255,255,255,.42);font-size:.7rem">🌍 6 aéroports</span>
+          <span style="background:rgba(232,0,29,.12);border-radius:6px;padding:4px 9px;color:#ff4d5e;font-size:.7rem;font-weight:600">YGO YANGO</span>
+          <span style="background:rgba(225,29,72,.12);border-radius:6px;padding:4px 9px;color:#fb7185;font-size:.7rem;font-weight:600">❤️ Don du Cœur</span>
+        </div>
+      </div>
+      <div>
+        <div class="fh">Services</div>
+        <ul class="fl">
+          <li><a onclick="pg('home')">RetourColisBox</a></li>
+          <li><a onclick="pg('home')">RetourColisBag</a></li>
+          <li><a onclick="pg('don')">Don du Cœur ❤️</a></li>
+          <li><a onclick="pg('lost')">Objets Trouvés 🔍</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="fh">Informations</div>
+        <ul class="fl">
+          <li><a onclick="pg('obj')">Objets interdits</a></li>
+          <li><a onclick="pg('obj')">Procédure complète</a></li>
+          <li><a onclick="pg('part')">Nos partenaires</a></li>
+          <li><a onclick="pg('don')">Orphelinat Grand-Bassam</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="fh">Contact</div>
+        <ul class="fl">
+          <li><a href="mailto:franckvanie@yahoo.de">franckvanie@yahoo.de</a></li>
+          <li><a href="tel:+491773431460">+49 177 343 14 60</a></li>
+          <li><a>Burgackerweg 4, Freiburg</a></li>
+          <li><a>Abatta Cocody, Abidjan</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="fb">
+      <div class="fcp">© 2026 RetourColisBox — Ivoire Consulting & TITAN Holding. Tous droits réservés.</div>
+      <div class="flg"><a>Mentions légales</a><a>Politique de confidentialité</a><a>CGU</a></div>
+    </div>
+  </div>
+</footer>
+
+<!-- ══════════ MODAL PAIEMENT ══════════ -->
+<div class="mov" id="mov" onclick="ovClick(event)">
+  <div class="mbox" id="mbox">
+    <div class="mhd">
+      <div class="mtit">Paiement sécurisé</div>
+      <button class="mcl" onclick="closeM()">✕</button>
+    </div>
+
+    <div id="mmain">
+      <div class="mbod">
+        <div class="msi">
+          <div>
+            <div class="msnm" id="msn">RetourColisBox</div>
+            <div style="font-size:.7rem;color:var(--muted);margin-top:2px" id="mapt">Aéroport : Abidjan (ABJ)</div>
+          </div>
+          <div style="text-align:right">
+            <div class="mscfa em" id="mscfa">5 900 F CFA</div>
+            <div class="mseur" id="mseur">≈ 10 €</div>
+          </div>
+        </div>
+
+        <div class="ptabs">
+          <button class="ptb on" id="tb-mm" onclick="stab('mm')">📱 Mobile Money</button>
+          <button class="ptb" id="tb-cc" onclick="stab('cc')">💳 Carte bancaire</button>
+        </div>
+
+        <!-- MOBILE MONEY -->
+        <div class="ppnl on" id="pnl-mm">
+          <div style="font-size:.77rem;color:var(--muted);margin-bottom:.85rem">Sélectionnez votre opérateur :</div>
+          <div class="mmgr">
+            <div class="mmop sel" id="mm-wave" onclick="selMM('wave')"><div class="mmlg wave">Wave</div><div class="mmnm">Wave</div></div>
+            <div class="mmop" id="mm-om" onclick="selMM('om')"><div class="mmlg om">Orange</div><div class="mmnm">Orange Money</div></div>
+            <div class="mmop" id="mm-mtn" onclick="selMM('mtn')"><div class="mmlg mtn">MTN</div><div class="mmnm">MTN Mobile Money</div></div>
+            <div class="mmop" id="mm-moov" onclick="selMM('moov')"><div class="mmlg moov">Moov</div><div class="mmnm">Moov Africa</div></div>
+          </div>
+          <div style="font-size:.77rem;color:var(--muted);margin-bottom:5px">Numéro Mobile Money</div>
+          <div class="mmpr">
+            <div class="mmfx" id="mmpfx">+221</div>
+            <input class="cci" type="tel" placeholder="77 000 00 00" id="mm-ph" style="flex:1">
+          </div>
+          <div class="secn"><span>📲</span><span>Vous recevrez une notification sur votre téléphone pour valider le paiement.</span></div>
+        </div>
+
+        <!-- CARTE BANCAIRE -->
+        <div class="ppnl" id="pnl-cc">
+          <div class="ccgr">
+            <div class="ccf full"><div class="ccl">Titulaire de la carte</div><input class="cci" type="text" placeholder="NOM PRÉNOM" id="cc-nm"></div>
+            <div class="ccf full"><div class="ccl">Numéro de carte</div><input class="cci" type="text" placeholder="1234 5678 9012 3456" maxlength="19" id="cc-nb" oninput="fmtCard(this)"></div>
+            <div class="ccf"><div class="ccl">Date d'expiration</div><input class="cci" type="text" placeholder="MM/AA" maxlength="5" id="cc-ex" oninput="fmtExp(this)"></div>
+            <div class="ccf"><div class="ccl">CVV</div><input class="cci" type="text" placeholder="123" maxlength="4" id="cc-cv"></div>
+          </div>
+          <div class="secn"><span>🔒</span><span>Paiement crypté SSL 256 bits. Vos données ne sont jamais stockées sur nos serveurs.</span></div>
+        </div>
+      </div>
+      <div class="mft">
+        <button class="paybtn" id="paybtn" onclick="doPay()">Confirmer le paiement</button>
+      </div>
+    </div>
+
+    <!-- SUCCESS STATE -->
+    <div class="succ" id="msucc">
+      <div class="suic" id="suic">✅</div>
+      <div class="sutit" id="sutit">Paiement confirmé !</div>
+      <p class="susub" id="susub">Votre demande a été enregistrée. Un SMS de confirmation vous a été envoyé avec tous les détails de votre prise en charge.</p>
+      <div class="suref" id="suref">RCB-2026-0001</div>
+      <p style="font-size:.75rem;color:var(--muted);margin-top:.85rem">Conservez cette référence pour suivre votre dossier sur RetourColisBox.com</p>
+      <button class="btn-em" style="margin-top:1.3rem;display:inline-block;width:auto;padding:11px 24px" onclick="closeM()">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="tst"></div>
+
+<!-- ══════════ JAVASCRIPT ══════════ -->
+<script>
+// ── TRACKING DATA ──
+const REFS = {
+  'RCB-2026-X': "Colis sécurisé à l'aéroport d'Abidjan (ABJ) — En attente de récupération",
+  'RCB-2026-A': "Bagage en transit vers Bamako (BKO) via YANGO — Livraison prévue 14h00",
+  'RCB-2026-B': "Objet stocké à Lomé (LFW) — Récupération disponible sur place",
+  'RCB-2026-C': "Expédition internationale en cours depuis Niamey (NIM)",
+  'RCB-2026-D': "Don du Cœur accepté — Denrées acheminées vers Grand-Bassam ❤️",
+  'RCB-2026-E': "Objet retrouvé — Véhicule YANGO BKO-447, contact chauffeur envoyé par SMS"
+};
+
+// ── NAVIGATION ──
+function pg(id) {
+  document.querySelectorAll('.pg').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
+  const page = document.getElementById('pg-' + id);
+  const btn  = document.getElementById('n-' + id);
+  if (page) page.classList.add('on');
+  if (btn)  btn.classList.add('on');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  document.getElementById('navl').classList.remove('open');
+}
+
+function tmenu() {
+  document.getElementById('navl').classList.toggle('open');
+}
+
+// ── TRACKING ──
+function trk() {
+  const v  = document.getElementById('tri').value.trim().toUpperCase();
+  const rd = document.getElementById('sres');
+  const rt = document.getElementById('rtx');
+  if (!v) { toast('⚠️ Veuillez saisir une référence de colis'); return; }
+  if (REFS[v]) {
+    rt.textContent = REFS[v];
+    rd.style.display = 'block';
+  } else if (v.startsWith('RCB-')) {
+    rt.textContent = 'Référence ' + v + ' — En cours de traitement. Contactez-nous si le problème persiste.';
+    rd.style.display = 'block';
+  } else {
+    rd.style.display = 'none';
+    toast('❌ Référence introuvable. Format attendu : RCB-2026-X');
+  }
+}
+document.getElementById('tri').addEventListener('keypress', e => { if (e.key === 'Enter') trk(); });
+
+// ── MODAL ──
+const PFXS = { wave: '+221', om: '+225', mtn: '+225', moov: '+226' };
+let curMM = 'wave';
+let isHeart = false;
+
+function openM(name, cfa, eur, type) {
+  isHeart = (type === 'hr');
+  document.getElementById('msn').textContent   = name;
+  document.getElementById('mscfa').textContent = cfa;
+  document.getElementById('mscfa').className   = 'mscfa ' + (isHeart ? 'hr' : 'em');
+  document.getElementById('mseur').textContent = eur;
+  document.getElementById('mmain').style.display  = 'block';
+  document.getElementById('msucc').style.display  = 'none';
+  const pb = document.getElementById('paybtn');
+  pb.className = 'paybtn' + (isHeart ? ' hrt' : '');
+  stab('mm');
+  selMM('wave');
+  document.getElementById('mov').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeM() {
+  document.getElementById('mov').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function ovClick(e) { if (e.target === document.getElementById('mov')) closeM(); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeM(); });
+
+function stab(t) {
+  document.querySelectorAll('.ptb').forEach(b  => b.classList.remove('on'));
+  document.querySelectorAll('.ppnl').forEach(p => p.classList.remove('on'));
+  document.getElementById('tb-'  + t).classList.add('on');
+  document.getElementById('pnl-' + t).classList.add('on');
+}
+
+function selMM(op) {
+  curMM = op;
+  document.querySelectorAll('.mmop').forEach(o => o.classList.remove('sel'));
+  document.getElementById('mm-' + op).classList.add('sel');
+  document.getElementById('mmpfx').textContent = PFXS[op] || '+225';
+}
+
+function fmtCard(i) {
+  let v = i.value.replace(/\D/g, '').substring(0, 16);
+  i.value = v.replace(/(.{4})/g, '$1 ').trim();
+}
+function fmtExp(i) {
+  let v = i.value.replace(/\D/g, '').substring(0, 4);
+  if (v.length >= 2) v = v.substring(0, 2) + '/' + v.substring(2);
+  i.value = v;
+}
+
+function genRef() {
+  const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let r = 'RCB-2026-';
+  for (let i = 0; i < 6; i++) r += c[Math.floor(Math.random() * c.length)];
+  return r;
+}
+
+function doPay() {
+  const at = document.querySelector('.ptb.on').id;
+  let ok = true;
+  if (at === 'tb-cc') {
+    const nb = document.getElementById('cc-nb').value.replace(/\s/g, '');
+    const nm = document.getElementById('cc-nm').value.trim();
+    const ex = document.getElementById('cc-ex').value;
+    const cv = document.getElementById('cc-cv').value;
+    if (!nm || nb.length < 16 || ex.length < 5 || cv.length < 3) {
+      toast('⚠️ Remplissez tous les champs de la carte'); ok = false;
+    }
+  } else {
+    const ph = document.getElementById('mm-ph').value.replace(/\s/g, '');
+    if (ph.length < 8) { toast('⚠️ Saisissez un numéro de téléphone valide'); ok = false; }
+  }
+  if (!ok) return;
+  const btn = document.getElementById('paybtn');
+  btn.textContent = 'Traitement en cours…'; btn.disabled = true;
+  setTimeout(() => {
+    btn.textContent = 'Confirmer le paiement'; btn.disabled = false;
+    document.getElementById('mmain').style.display = 'none';
+    const ref = genRef();
+    document.getElementById('suref').textContent = isHeart ? '❤️ DON-' + ref.slice(4) : ref;
+    document.getElementById('suref').className = 'suref' + (isHeart ? ' hr' : '');
+    document.getElementById('suic').textContent  = isHeart ? '❤️' : '✅';
+    document.getElementById('sutit').textContent = isHeart ? 'Don du Cœur confirmé !' : 'Paiement confirmé !';
+    document.getElementById('susub').textContent = isHeart
+      ? 'Vos denrées seront acheminées vers l\'Orphelinat National de Grand-Bassam. Vous recevrez votre attestation de don par SMS sous 24h.'
+      : 'Votre demande a été enregistrée. Un SMS de confirmation vous a été envoyé avec tous les détails de votre prise en charge.';
+    document.getElementById('msucc').style.display = 'block';
+  }, 2000);
+}
+
+// ── CONTACT FORM ──
+function subContact() {
+  const nm = document.getElementById('cf-nm').value.trim();
+  const or = document.getElementById('cf-or').value.trim();
+  const em = document.getElementById('cf-em').value.trim();
+  const ms = document.getElementById('cf-ms').value.trim();
+  if (!nm || !or || !em || !ms) { toast('⚠️ Remplissez tous les champs obligatoires'); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { toast('⚠️ Adresse email invalide'); return; }
+  ['cf-nm','cf-or','cf-em','cf-ph','cf-ms'].forEach(id => { document.getElementById(id).value = ''; });
+  document.getElementById('cf-ty').selectedIndex = 0;
+  document.getElementById('cf-ap').selectedIndex = 0;
+  toast('✓ Votre demande a été envoyée ! Nous vous répondrons sous 48h.');
+}
+
+// ── LOST FORM ──
+function subLost() {
+  const nm  = document.getElementById('lf-nm').value.trim();
+  const ph  = document.getElementById('lf-ph').value.trim();
+  const ty  = document.getElementById('lf-ty').value;
+  const ap  = document.getElementById('lf-ap').value;
+  const dsc = document.getElementById('lf-dsc').value.trim();
+  const dt  = document.getElementById('lf-dt').value;
+  if (!nm || !ph || !ty || !ap || !dsc || !dt) {
+    toast('⚠️ Remplissez tous les champs obligatoires pour déclencher la recherche'); return;
+  }
+  const ref = 'OBJ-2026-' + ap.substring(0,3) + '-' + String(Math.floor(Math.random()*900+100));
+  ['lf-nm','lf-ph','lf-ref','lf-dsc','lf-inf'].forEach(id => { document.getElementById(id).value = ''; });
+  document.getElementById('lf-ty').selectedIndex = 0;
+  document.getElementById('lf-ap').selectedIndex = 0;
+  document.getElementById('lf-dt').value = '';
+  toast('🔍 Recherche déclenchée — Référence : ' + ref + ' — Vous serez contacté sous 2h.');
+}
+
+// ── TOAST ──
+function toast(msg) {
+  const t = document.getElementById('tst');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+// ── SCROLL SHADOW ──
+window.addEventListener('scroll', () => {
+  document.getElementById('hdr').style.boxShadow =
+    window.scrollY > 8 ? '0 4px 20px rgba(0,0,0,.32)' : 'none';
+});
+</script>
+</body>
+</html>
